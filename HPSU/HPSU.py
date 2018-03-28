@@ -21,6 +21,7 @@ import os.path
 import time
 
 class HPSU(object):
+    # technical specification of the known commands
     commands = []
     listCommands = []
     UM_DEGREE = "d"
@@ -43,8 +44,11 @@ class HPSU(object):
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
         
         LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
+        # 'dictionary', list of all the known commands with human readable descriptions
+        # red from a language specific file and then merged in the commands array
         hpsuDict = {}
-        
+
+        # reads dictionary from the correct file
         commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
         if not os.path.isfile(commands_hpsu):
             commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
@@ -58,6 +62,7 @@ class HPSU(object):
                 desc = row[2]
                 hpsuDict.update({name:{"label":label, "desc":desc}})
             
+        # reads the technical specifications of the same commands
         with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
             next(pyHPSUCSV, None) # skip the header
